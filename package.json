@@ -1,0 +1,45 @@
+{
+  "name": "three-template",
+  "version": "1.0.0",
+  "description": "webpack, babel, typescript, threejs, ammojs, and exponent-ts template",
+  "scripts": {
+    "build": "webpack"
+  },
+  "keywords": [
+    "webpack",
+    "babel",
+    "typescript"
+  ],
+  "author": "RepComm",
+  "license": "Unlicense",
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/preset-env": "^7.12.1",
+    "@babel/preset-typescript": "^7.12.1",
+    "@repcomm/three.terrain": "^1.6.0",
+    "babel-loader": "^8.1.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "copy-webpack-plugin": "^6.2.1",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
+  },
+  "private": true,
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-typescript"
+    ],
+    "plugins": [
+      "transform-class-properties",
+      "@babel/plugin-transform-runtime"
+    ]
+  },
+  "dependencies": {
+    "@repcomm/exponent-ts": "^1.1.4",
+    "@repcomm/gameinput-ts": "^1.9.2",
+    "@repcomm/three.lookcamera": "^1.0.1",
+    "@types/ammo.js": "github:osman-turan/ammo.js-typings",
+    "three": "^0.124.0"
+  }
+}
