@@ -15,7 +15,8 @@ module.exports = {
       patterns: [
         { from: 'src/index.html', to: 'index.html' },
         { from: 'src/index.css', to: 'index.css' },
-        { from: 'src/ammo', to: 'ammo' }
+        { from: 'src/ammo', to: 'ammo' },
+        { from: 'src/resources', to: 'resources' }
       ],
     })
   ],

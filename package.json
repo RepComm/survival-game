@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@repcomm/exponent-ts": "^1.1.4",
-    "@repcomm/gameinput-ts": "^1.9.2",
+    "@repcomm/gameinput-ts": "^1.9.5",
     "@repcomm/three.lookcamera": "^1.0.1",
     "@types/ammo.js": "github:osman-turan/ammo.js-typings",
     "three": "^0.124.0"

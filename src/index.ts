@@ -18,13 +18,14 @@ import { Physics, PhysicsSphere } from "./physics";
 import { ScatterMeshes, DiamondSquare, EaseInWeak } from "@repcomm/three.terrain";
 import { FreeCamera } from "@repcomm/three.lookcamera";
 import { GameInput } from "@repcomm/gameinput-ts";
+import { Cessna } from "./resources/cessna/cessna";
 
 //Because top level await is a mess
 async function main() {
 
   //Wait on ammo to load (imported w/ html tag)
   await Ammo();
-  const physics = new Physics();
+  const physics = Physics.get();
 
   //Append exponent styles
   EXPONENT_CSS_STYLES.mount(document.head);
@@ -36,19 +37,14 @@ async function main() {
 
   const scene = new Scene();
 
-  const freecam = new FreeCamera();
-  scene.add(freecam);
-
-  const freecamPhysics = new PhysicsSphere(1, 1)
-  .setVisual(freecam);
-
-  physics.add(freecamPhysics);
+  const cessna = new Cessna();
+  scene.add(cessna);
 
   //Renderer mixes exponent system with three js renderer
   const renderer = new Renderer()
     .mount(container)
     .setScene(scene)
-    .setCamera(freecam.getCamera());
+    .setCamera(cessna.getCamera());
 
   const input = GameInput.get();
 
@@ -56,7 +52,7 @@ async function main() {
   .addInfluence({
     keys: ["s"],
     value: 1.0,
-    gpAxes:[1]
+    gpAxes:[1, 7]
   }).addInfluence({
     keys: ["w"],
     value: -1.0
@@ -66,7 +62,7 @@ async function main() {
   .addInfluence({
     keys: ["d"],
     value: 1.0,
-    gpAxes:[0]
+    gpAxes:[0, 6]
   }).addInfluence({
     keys: ["a"],
     value: -1.0,
@@ -76,43 +72,36 @@ async function main() {
   .addInfluence({
     mouseAxes:[0],
     value: 1.0,
-    gpAxes:[3]
+    gpAxes:[3],
+    gpAxisScale: 4,
+    pointerAxisScale: 0.3
   });
 
   input.createAxis("vertical")
   .addInfluence({
     mouseAxes:[1],
     value: 1.0,
-    gpAxes:[4]
+    gpAxes:[4],
+    gpAxisScale: 4,
+    pointerAxisScale: 0.3
   });
 
-  const moveVector = new Vector3();
-
-  const rotateSensitivity = 20;
-  const moveSpeed = -10;
+  input.createAxis("thruster")
+  .addInfluence({
+    value: 1.0,
+    gpAxes:[5]
+  });
 
   setInterval(() => {
     if (!input.raw.pointerIsLocked() && input.raw.getPointerButton(0)) {
       input.raw.pointerTryLock(renderer.getCanvas());
     }
     if (!input.raw.pointerIsLocked()) return;
-    moveVector.set(0, 0, 0);
 
-    moveVector.x = input.getAxisValue("side") * moveSpeed;
-    moveVector.y = input.getAxisValue("forward") * moveSpeed;
+    physics.step(1/60);
 
-    freecam.addMovementInput(moveVector.y, moveVector.x);
-
-    // freecamPhysics.applyForce(moveVector, freecam.position);
-
-    freecam.addRotationInput(
-      input.getAxisValue("horizontal") * rotateSensitivity,
-      input.getAxisValue("vertical") * rotateSensitivity
-    );
-
-    // physics.step(1/30);
-    // freecamPhysics.update();
-  }, 1000 / 30);
+    cessna.update();
+  }, 1000 / 60);
 
   let intervals = 63;
 
@@ -134,8 +123,8 @@ async function main() {
 
   const terrain = new Terrain(terrainOpts);
 
-  terrain.initPhysics(terrainOpts);
-  physics.getPhysicsWorld().addRigidBody(terrain.getPhysicsBody());
+  // terrain.initPhysics(terrainOpts);
+  // physics.getPhysicsWorld().addRigidBody(terrain.getPhysicsBody());
 
   terrain.rotateX(-Math.PI/2);
 
@@ -156,7 +145,7 @@ async function main() {
 
   (()=>{
     let rect = renderer.getRect();
-    let cam = (freecam.getCamera() as PerspectiveCamera);
+    let cam = (cessna.getCamera() as PerspectiveCamera);
 
     cam.aspect = rect.width/rect.height;
     cam.updateProjectionMatrix();
